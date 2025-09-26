@@ -18,7 +18,7 @@ class AuthController < ApplicationController
     if user&.authenticate(params[:password])
       json_notice("User signed in successfully", **token_pair_for(user))
     else
-      json_error(error: "Invalid email or password", status: :unauthorized)
+      json_error("Invalid email or password", status: :unauthorized)
     end
   end
 

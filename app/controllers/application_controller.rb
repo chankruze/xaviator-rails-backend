@@ -39,15 +39,15 @@ class ApplicationController < ActionController::API
     Rails.logger.error exception.backtrace.join("\n")
   end
 
-  def json_error(error, status: :unprocessable_content, **context)
-    message =
-      if error.is_a?(StandardError)
-        error.respond_to?(:record) ? error.record.errors_to_sentence : error.message
-      else
-        error.to_s
-      end
+  def error_message(error)
+    return error.to_s unless error.is_a?(StandardError)
+    return error.record.errors_to_sentence if error.respond_to?(:record)
 
-    render json: { error: message, **context }, status:
+    error.message
+  end
+
+  def json_error(error, status: :unprocessable_entity, **context)
+    render json: { error: error_message(error), **context }, status:
   end
 
   def json_notice(message, status: :ok, **extra)
