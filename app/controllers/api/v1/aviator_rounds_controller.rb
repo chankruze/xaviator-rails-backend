@@ -25,12 +25,17 @@ module Api
           return json_error("Cannot place bet, round is not in betting phase", status: :forbidden)
         end
 
-        if @round.bets.exists?(user: current_user)
-          return json_error("You have already placed a bet on this round", status: :forbidden)
-        end
+        # Find existing bet for this user and round
+        existing_bet = @round.bets.find_by(user: current_user)
 
-        # TODO: Create a Bet record linked to current_user
-        bet = @round.bets.create(user: current_user, amount: amount)
+        if existing_bet
+          # Merge: Add new amount to existing bet
+          existing_bet.update!(amount: existing_bet.amount + amount)
+          bet = existing_bet
+        else
+          # Create a new bet
+          bet = @round.bets.create!(user: current_user, amount: amount)
+        end
 
         json_notice("Bet placed successfully", bet: bet)
       rescue ActiveRecord::RecordInvalid => e
