@@ -19,13 +19,15 @@ class AviatorRound < ApplicationRecord
   validates :betting_duration, numericality: { only_integer: true, greater_than_or_equal_to: MIN_BETTING_DURATION, less_than_or_equal_to: MAX_BETTING_DURATION }
   validates :house_edge, numericality: { greater_than_or_equal_to: MIN_HOUSE_EDGE, less_than: MAX_HOUSE_EDGE } # Max 50% edge
   validates :max_multiplier, numericality: { greater_than: MIN_MAX_MULTIPLIER }
+  # TODO: validate max bet limit and min bet limit if added (e.g., max 1000, min 1 to start)
 
   # Callbacks
   before_validation :set_default_attributes
   after_update :check_for_betting_phase_end, if: :saved_change_to_status?
 
   # Associations
-  # has_many :bets, dependent: :destroy
+  has_many :bets, class_name: "AviatorBet", dependent: :destroy
+  has_many :users, through: :bets
   # has_many :cashouts, through: :bets
 
   # Instance Methods

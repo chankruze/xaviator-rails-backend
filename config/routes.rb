@@ -12,4 +12,13 @@ Rails.application.routes.draw do
   post   "/auth/signin",  to: "auth#signin"
   post   "/auth/refresh", to: "auth#refresh"
   delete "/auth/revoke",  to: "auth#revoke"
+
+  namespace :api do
+    namespace :v1 do
+      resources :aviator_rounds, only: %i[index show] do
+        # Betting endpoint for users
+        post :bet, on: :member
+      end
+    end
+  end
 end
