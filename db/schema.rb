@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_15_125545) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_16_130241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "aviator_rounds", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.float "crash_point"
+    t.integer "betting_duration"
+    t.float "house_edge"
+    t.float "max_multiplier"
+    t.datetime "started_at"
+    t.datetime "betting_ends_at"
+    t.datetime "crashed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "refresh_tokens", force: :cascade do |t|
     t.bigint "user_id", null: false
