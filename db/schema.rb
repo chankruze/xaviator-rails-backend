@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_16_130241) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_134103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "aviator_bets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "aviator_round_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["aviator_round_id"], name: "index_aviator_bets_on_aviator_round_id"
+    t.index ["user_id", "aviator_round_id"], name: "index_aviator_bets_on_user_id_and_aviator_round_id", unique: true
+    t.index ["user_id"], name: "index_aviator_bets_on_user_id"
+  end
 
   create_table "aviator_rounds", force: :cascade do |t|
     t.integer "status"
@@ -51,5 +63,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_130241) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "aviator_bets", "aviator_rounds"
+  add_foreign_key "aviator_bets", "users"
   add_foreign_key "refresh_tokens", "users"
 end

@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   # Associations
   has_many :refresh_tokens, dependent: :delete_all
+  has_many :bets, class_name: "AviatorBet", dependent: :destroy
+  has_many :aviator_rounds, through: :bets
 
   # Callbacks
   before_validation :downcase_email
