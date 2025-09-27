@@ -15,12 +15,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_130241) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "aviator_rounds", force: :cascade do |t|
-    t.integer "status", default: 0, null: false
+    t.integer "status"
     t.float "crash_point"
     t.integer "betting_duration"
     t.float "house_edge"
     t.float "max_multiplier"
-    t.datetime "started_at"
+    t.datetime "betting_started_at"
     t.datetime "betting_ends_at"
     t.datetime "crashed_at"
     t.datetime "created_at", null: false
