@@ -12,7 +12,20 @@ module Api
 
       # GET /api/v1/aviator_rounds/:id
       def show
-        json_response(@round)
+        round = AviatorRound.includes(bets: :user).find(params[:id])
+        json_response(
+          round.as_json(
+            only: [ :id, :status, :betting_duration, :created_at, :updated_at ],
+            include: {
+              bets: {
+                only: [ :id, :amount, :status ],
+                include: {
+                  user: { only: [ :id, :email ] }
+                }
+              }
+            }
+          )
+        )
       end
 
       # POST /api/v1/aviator_rounds/:id/bet
