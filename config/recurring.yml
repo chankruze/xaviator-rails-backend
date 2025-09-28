@@ -18,6 +18,10 @@ development:
     queue: background
     class: CleanupEndedRoundsJob
     schedule: at 2am every day
+  cleanup_refresh_tokens:
+    class: CleanupRefreshTokensJob
+    queue: background
+    retries: 3
 
 production:
   clear_solid_queue_finished_jobs:
@@ -31,3 +35,7 @@ production:
     queue: background
     class: CleanupEndedRoundsJob
     schedule: at 2am every day
+  cleanup_refresh_tokens:
+    class: CleanupRefreshTokensJob
+    queue: background
+    retries: 3
