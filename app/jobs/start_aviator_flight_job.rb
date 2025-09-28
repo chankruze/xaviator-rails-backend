@@ -12,7 +12,7 @@ class StartAviatorFlightJob < ApplicationJob
     Aviator::FlightSimulationService.new(round).start!
 
     # Schedule a failsafe to force-crash if something goes wrong
-    EndAviatorRoundJob.set(wait: round.max_multiplier.seconds).perform_later(round.id)
+    # EndAviatorRoundJob.set(wait: 120.seconds).perform_later(round.id)
 
     Rails.logger.info("AviatorRound #{round.id} flight simulation started successfully!")
   rescue => e

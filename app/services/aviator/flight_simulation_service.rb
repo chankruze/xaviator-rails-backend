@@ -1,27 +1,37 @@
 module Aviator
   class FlightSimulationService
-    TICK_INTERVAL = 0.2.seconds # how often to broadcast new multiplier
+    TICK_INTERVAL = 0.2.seconds
+    INITIAL_MULTIPLIER = 0.01
+    INITIAL_ACCELERATION = 1.1  # faster early growth
 
     def initialize(round)
       @round = round
+      @tick_count = 0
     end
 
     def start!
       return unless @round.flying?
 
-      # Kick off first tick
-      schedule_tick(1.0)
+      schedule_tick(0.0)
     end
 
     def tick!(multiplier)
-      return unless @round.reload.flying?
+      round = @round.reload
+      return unless round.flying?
 
-      if multiplier >= @round.crash_point
-        @round.end_round!
-        broadcast_crash(multiplier)
+      if multiplier >= round.crash_point
+        broadcast_crash(round.crash_point)
+        round.end_round!
       else
         broadcast_multiplier(multiplier)
-        schedule_tick(next_multiplier(multiplier))
+
+        # Schedule next tick safely
+        next_tick = next_multiplier(multiplier)
+        if next_tick >= round.crash_point
+          tick!(round.crash_point) # force final tick immediately
+        else
+          schedule_tick(next_tick)
+        end
       end
     end
 
@@ -32,8 +42,15 @@ module Aviator
     end
 
     def next_multiplier(current)
-      # simple exponential growth model
-      (current * 1.03).round(2) # grows ~3% per tick
+      @tick_count += 1
+
+      if current.zero? && @tick_count == 1
+        INITIAL_MULTIPLIER
+      elsif @tick_count <= 5
+        current * INITIAL_ACCELERATION
+      else
+        current * 1.03
+      end
     end
 
     def broadcast_multiplier(multiplier)

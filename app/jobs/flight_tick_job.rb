@@ -1,7 +1,7 @@
 class FlightTickJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
+  def perform(round_id, multiplier)
     round = AviatorRound.find_by(id: round_id)
     return unless round&.flying?
 

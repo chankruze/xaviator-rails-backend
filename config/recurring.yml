@@ -12,7 +12,7 @@
 development:
   aviator_round_starter:
     class: AviatorRoundLifecycleJob
-    schedule: every 30 seconds
+    schedule: every 3 minutes
     queue: default
   cleanup_ended_rounds:
     queue: background
@@ -29,7 +29,7 @@ production:
     schedule: every hour at minute 12
   aviator_round_starter:
     class: AviatorRoundLifecycleJob
-    schedule: every 30 seconds
+    schedule: every 3 minutes
     queue: default
   cleanup_ended_rounds:
     queue: background
