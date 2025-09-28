@@ -8,10 +8,13 @@ class StartAviatorFlightJob < ApplicationJob
     # Start the flight
     round.start_flight!
 
-    # TODO: End the round after simulation duration to reach the crash point
-    EndAviatorRoundJob.perform_later(round.id)
+    # End the round after simulation duration to reach the crash point
+    Aviator::FlightSimulationService.new(round).start!
 
-    Rails.logger.info("AviatorRound #{round.id} flight started successfully!")
+    # Schedule a failsafe to force-crash if something goes wrong
+    # EndAviatorRoundJob.set(wait: 120.seconds).perform_later(round.id)
+
+    Rails.logger.info("AviatorRound #{round.id} flight simulation started successfully!")
   rescue => e
     Rails.logger.error("StartAviatorFlightJob failed: #{e.message}")
   end

@@ -7,7 +7,9 @@ class EndAviatorRoundJob < ApplicationJob
 
     round.end_round!
 
-    Rails.logger.info("AviatorRound #{round.id} ended successfully!")
+    ActionCable.server.broadcast("aviator_rounds", { id: round.id, event: "crashed", multiplier: round.crash_point })
+
+    Rails.logger.warn("Failsafe ended AviatorRound #{round.id}")
   rescue => e
     Rails.logger.error("EndAviatorRoundJob failed: #{e.message}")
   end
