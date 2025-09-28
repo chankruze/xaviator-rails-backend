@@ -14,6 +14,10 @@ development:
     class: AviatorRoundLifecycleJob
     schedule: every 30 seconds
     queue: default
+  cleanup_ended_rounds:
+    queue: background
+    class: CleanupEndedRoundsJob
+    schedule: at 2am every day
 
 production:
   clear_solid_queue_finished_jobs:
@@ -23,3 +27,7 @@ production:
     class: AviatorRoundLifecycleJob
     schedule: every 30 seconds
     queue: default
+  cleanup_ended_rounds:
+    queue: background
+    class: CleanupEndedRoundsJob
+    schedule: at 2am every day
